@@ -47,4 +47,5 @@ ENV SESSION_DRIVER=file \
 ENV PORT=10000
 EXPOSE 10000
 
-CMD sh -c "php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
+# Free Render has no pre-deploy; migrate here when DATABASE_URL is set (no-op if DB missing).
+CMD sh -c "php artisan migrate --force 2>/dev/null || true; php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
