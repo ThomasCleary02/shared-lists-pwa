@@ -37,6 +37,9 @@ RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php \
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache
 
+COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Defaults when Render env omits these: avoid DB on every request until Postgres is wired.
 # Override in the dashboard with database drivers once DB_URL is set and migrated.
 ENV SESSION_DRIVER=file \
@@ -47,5 +50,6 @@ ENV SESSION_DRIVER=file \
 ENV PORT=10000
 EXPOSE 10000
 
-# Free Render has no pre-deploy; migrate here when DATABASE_URL is set (no-op if DB missing).
-CMD sh -c "php artisan migrate --force 2>/dev/null || true; php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"
+# php artisan serve uses Laravel's server.php which logs every request to php://stdout
+# before index.php — that can cause "headers already sent" on Render. Use php -S + quiet server.php.
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
