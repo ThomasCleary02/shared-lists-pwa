@@ -1,0 +1,20 @@
+---
+description: Shared Lists PWA — stack, architecture, junior onboarding from Django/React
+alwaysApply: true
+---
+
+# Shared Lists PWA
+
+Progressive-web-app–ready **collaborative lists**: owners create lists, add items, invite others; invitees accept and edit together.
+
+**Stack:** Laravel + MySQL (DDEV), Vue 3 + Inertia + Vite.
+
+**Architecture:** One Laravel app. Routes hit controllers; controllers return `Inertia::render('Pages/...', props)`. Vue in `resources/js/Pages` renders UI and POSTs to Laravel — not a separate REST API for those screens.
+
+**Onboarding:** Maintainer knows **Django** (routes/views/models), **Next.js** (server-provided props ≈ Inertia props), **React** (Vue 3 `<script setup>` + composition API is familiar).
+
+**Long-form plan, schema, phases, definition of done:** `.cursor/CONTEXT.md`.
+
+**Current codebase notes:** List entity is **`SharedList`** (table `lists`, route param `shared_list`). Items, members, invites, and policies are still to build per CONTEXT phases 3–5.
+
+When adding features, align naming and routes with CONTEXT; prefer policies for authorization once membership exists.

@@ -1,0 +1,25 @@
+{
+    "name": "Shared Lists",
+    "short_name": "Lists",
+    "description": "Create collaborative lists and share them with others.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#f3f4f6",
+    "theme_color": "#4f46e5",
+    "icons": [
+        {
+            "src": "/icons/icon.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-maskable.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        }
+    ]
+}

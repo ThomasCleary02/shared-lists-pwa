@@ -1,0 +1,15 @@
+---
+description: Laravel controllers, routes, models, validation, Inertia for this app
+globs: app/**/*.php,routes/**/*.php,database/**/*.php,config/**/*.php
+alwaysApply: false
+---
+
+# Laravel (this repo)
+
+- **Routes:** `routes/web.php`; group authenticated list routes under `middleware('auth')` (and `verified` where Breeze expects it).
+- **Controllers:** Keep actions thin: validate → authorize → Eloquent → `redirect()` or `Inertia::render()`.
+- **Validation:** `$request->validate([...])` or Form Requests; never skip server-side rules from `.cursor/CONTEXT.md`.
+- **Inertia:** Page props must match what Vue expects (camelCase vs snake_case: pick one convention per resource and stay consistent).
+- **Models:** Use Eloquent relationships; new tables only via migrations.
+- **Authorization:** Evolve to **Policies** (e.g. `SharedListPolicy`) for view/update/destroy; until `list_members` exists, document any temporary owner-only checks and replace when Phase 4–5 land.
+- **No JSON APIs** for the same UX flows the Vue pages use — use redirects and Inertia unless there is a deliberate API boundary.

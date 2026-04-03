@@ -1,0 +1,15 @@
+---
+description: Vue 3 + Inertia pages and forms for Shared Lists PWA
+globs: resources/js/**/*.vue,resources/js/**/*.ts,resources/js/**/*.js
+alwaysApply: false
+---
+
+# Vue + Inertia (this repo)
+
+- **Pages:** `resources/js/Pages/**`; use `AuthenticatedLayout` for logged-in screens (match existing pages).
+- **Props:** Come from the controller’s `Inertia::render` second argument; treat as read-only data from the server.
+- **Forms:** Use Inertia’s `<Form>` or `router.post/patch/delete` from `@inertiajs/vue3` to hit named Laravel routes; avoid putting validation or permission rules only in the UI.
+- **Structure:** Plan adds `Components/ListItem.vue`, `ListItemForm.vue`, `InviteUserModal.vue` — colocate small UI there; pages orchestrate layout and data flow.
+- **Styling:** Tailwind per Breeze; keep mobile-friendly spacing and touch targets.
+
+Do not duplicate business logic (who can edit, what fields are required) in Vue — the server is authoritative.
