@@ -1,4 +1,4 @@
-# Multi-stage build for Render (PHP 8.3 + Laravel + Vite assets).
+# Multi-stage build for Render (PHP 8.4 + Laravel + Vite assets).
 # Composer runs first: Vite imports Ziggy from vendor/tightenco/ziggy, which
 # .dockerignore strips from the build context, so we copy it from this stage.
 FROM composer:2 AS vendor
@@ -16,7 +16,7 @@ COPY . .
 COPY --from=vendor /app/vendor/tightenco /app/vendor/tightenco
 RUN npm run build
 
-FROM php:8.3-cli-bookworm
+FROM php:8.4-cli-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
