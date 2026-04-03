@@ -30,8 +30,19 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
+# Cached manifests from dev (Boost, Breeze, etc.) must not ship with --no-dev vendor.
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php \
+    && APP_KEY="base64:$(openssl rand -base64 32 | tr -d '\n\r')" php artisan package:discover --ansi --no-interaction
+
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R ug+rwx storage bootstrap/cache
+
+# Defaults when Render env omits these: avoid DB on every request until Postgres is wired.
+# Override in the dashboard with database drivers once DB_URL is set and migrated.
+ENV SESSION_DRIVER=file \
+    CACHE_STORE=file \
+    QUEUE_CONNECTION=sync \
+    LOG_CHANNEL=stderr
 
 ENV PORT=10000
 EXPOSE 10000
