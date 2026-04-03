@@ -1,17 +1,20 @@
 # Multi-stage build for Render (PHP 8.3 + Laravel + Vite assets).
-FROM node:22-bookworm AS frontend
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
+# Composer runs first: Vite imports Ziggy from vendor/tightenco/ziggy, which
+# .dockerignore strips from the build context, so we copy it from this stage.
 FROM composer:2 AS vendor
 WORKDIR /app
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist
 COPY . .
 RUN composer dump-autoload --optimize
+
+FROM node:22-bookworm AS frontend
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+COPY --from=vendor /app/vendor/tightenco /app/vendor/tightenco
+RUN npm run build
 
 FROM php:8.3-cli-bookworm
 
