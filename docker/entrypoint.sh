@@ -1,7 +1,13 @@
 #!/bin/sh
 set -e
 cd /var/www/html
+
+# Composer deps are installed at image build (multi-stage Dockerfile), not here — same end state as
+# Render’s sample deploy script. Runtime needs real env (APP_KEY, DATABASE_URL, etc.) from the dashboard.
 php artisan migrate --force >/dev/null 2>&1 || true
+
+php artisan config:cache
+php artisan route:cache 2>/dev/null || echo "entrypoint: route:cache skipped (e.g. closure routes)"
 
 PORT="${PORT:-10000}"
 
