@@ -16,13 +16,15 @@ COPY . .
 COPY --from=vendor /app/vendor/tightenco /app/vendor/tightenco
 RUN npm run build
 
-FROM php:8.4-cli-bookworm
+FROM php:8.4-fpm-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libzip-dev \
+    nginx \
     && docker-php-ext-install pdo_pgsql zip \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /etc/nginx/sites-enabled/default
 
 WORKDIR /var/www/html
 
@@ -50,6 +52,6 @@ ENV SESSION_DRIVER=file \
 ENV PORT=10000
 EXPOSE 10000
 
-# php artisan serve uses Laravel's server.php which logs every request to php://stdout
-# before index.php — that can cause "headers already sent" on Render. Use php -S + quiet server.php.
+# Use nginx + php-fpm (fpm-fcgi), not php's built-in server (cli-server), so Symfony/Laravel
+# can send headers reliably and session startup is not tripped by SAPI edge cases on Render.
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
